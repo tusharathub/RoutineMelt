@@ -10,7 +10,7 @@ export async function POST(req: Request) {
     }
 
     const client = await clientPromise;
-    const db = client.db("streakTracker");
+    const db = client.db("RoutineMelt");
 
     const task = {
       userId,
@@ -39,7 +39,7 @@ export async function GET(req: Request) {
     }
 
     const client = await clientPromise;
-    const db = client.db("streakTracker");
+    const db = client.db("RoutineMelt");
 
     const tasks = await db
       .collection("tasks")

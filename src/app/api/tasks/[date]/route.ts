@@ -2,7 +2,7 @@ import clientPromise from "@/app/lib/mongodb";
 import { NextResponse } from "next/server";
 
 
-export async function GEt(req: Request, {params }: {params : {date : string}}) {
+export async function GET(req: Request, {params }: {params : {date : string}}) {
     try {
         const { searchParams} = new URL(req.url);
         const userId  = searchParams.get("userId");

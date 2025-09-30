@@ -11,7 +11,7 @@ export default async function Home() {
   return(
     <div>
       <h1>Welcome back, {user.firstName} </h1>
-      <Link href={`/grid`}> Check your progress </Link>
+      <Link href={`/grid`}> Check progress </Link>
     </div>
   )
 }

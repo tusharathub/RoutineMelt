@@ -3,11 +3,20 @@
 :root {
   --background: #ffffff;
   --foreground: #171717;
-}.color-empty { fill: #ebedf0; }
-.color-github-1 { fill: #9be9a8; }
-.color-github-2 { fill: #40c463; }
-.color-github-3 { fill: #30a14e; }
-.color-github-4 { fill: #216e39; }
+}
+
+.color-empty   { fill: #ebedf0; } /* background / no activity */
+
+.color-github-1 { fill: #e6f9ec; }  /* very light mint */
+.color-github-2 { fill: #c9f2d7; }  /* pale green */
+.color-github-3 { fill: #a6e6b8; }  /* light green */
+.color-github-4 { fill: #7ddf95; }  /* softer green */
+.color-github-5 { fill: #52d474; }  /* medium green */
+.color-github-6 { fill: #34c759; }  /* iOS green */
+.color-github-7 { fill: #28a745; }  /* classic green */
+.color-github-8 { fill: #218838; }  /* dark green */
+.color-github-9 { fill: #19692c; }  /* very dark green */
+.color-github-10 { fill: #0f441b; } /* deepest green */
 
 
 @theme inline {

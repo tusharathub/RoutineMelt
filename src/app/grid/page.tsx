@@ -2,47 +2,73 @@
 
 import CalendarHeatmap from "react-calendar-heatmap";
 import "react-calendar-heatmap/dist/styles.css";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useUser, SignInButton, UserButton } from "@clerk/nextjs";
 
-type Task = { title: string; createdAt: string };
+type Task = { _id?: string; title: string; createdAt: string };
 type DayDoc = { date: string; tasks: Task[] };
+type HeatMapValue = { date: string; count: number };
 
 export default function Home() {
   const { user, isSignedIn } = useUser();
 
-  const [values, setValues] = useState<{ date: string; count: number }[]>([]);
+  const [values, setValues] = useState<HeatMapValue[]>([]);
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
   const [selectedTasks, setSelectedTasks] = useState<Task[]>([]);
   const [newTask, setNewTask] = useState("");
+  const [error, setError] = useState<string | null>(null);
+
+  // 🔹 Compute dynamic start/end dates (past 11 months, next 1 month)
+  const { startDate, endDate } = useMemo(() => {
+    const today = new Date();
+
+    const start = new Date(today);
+    start.setMonth(start.getMonth() - 11); // 11 months before
+
+    const end = new Date(today);
+    end.setMonth(end.getMonth() + 1); // 1 month after
+
+    return {
+      startDate: start,
+      endDate: end,
+    };
+  }, []);
 
   // Load heatmap data
   useEffect(() => {
     if (!isSignedIn || !user) return;
 
     async function fetchData() {
-      if(!user) return;
-      const res = await fetch(
-        `/api/tasks?userId=${user.id}&from=2025-01-01&to=2025-12-31`
-      );
-      const docs: DayDoc[] = await res.json();
+      try {
+        const from = startDate.toISOString().split("T")[0];
+        const to = endDate.toISOString().split("T")[0];
 
-      // Map into heatmap values
-      const grouped: Record<string, number> = {};
-      docs.forEach((doc) => {
-        grouped[doc.date] = doc.tasks.length;
-      });
+        const res = await fetch(
+          `/api/tasks?userId=${user.id}&from=${from}&to=${to}`
+        );
+        if (!res.ok) throw new Error(`Failed to fetch tasks ${res.status}`);
+        const docs: DayDoc[] = await res.json();
 
-      const allDates = generateDateArray("2025-01-01", "2025-12-31");
-      const mergedValues = allDates.map((date) => ({
-        date,
-        count: grouped[date] || 0,
-      }));
+        // Map into heatmap values
+        const grouped: Record<string, number> = {};
+        docs.forEach((doc) => {
+          grouped[doc.date] = doc.tasks.length;
+        });
 
-      setValues(mergedValues);
+        const allDates = generateDateArray(from, to);
+        const mergedValues = allDates.map((date) => ({
+          date,
+          count: grouped[date] || 0,
+        }));
+
+        setValues(mergedValues);
+      } catch (err) {
+        console.log("error in fetching heatMap data :", err);
+        setError("failed to load tasks");
+      }
     }
     fetchData();
-  }, [isSignedIn, user]);
+  }, [isSignedIn, user, startDate, endDate]);
 
   function generateDateArray(start: string, end: string) {
     const arr: string[] = [];
@@ -59,48 +85,89 @@ export default function Home() {
     setSelectedDate(date);
     if (!user) return;
 
-    const res = await fetch(
-      `/api/tasks?userId=${user.id}&from=${date}&to=${date}`
-    );
-    const docs: DayDoc[] = await res.json();
-    setSelectedTasks(docs[0]?.tasks || []);
+    try {
+      const res = await fetch(
+        `/api/tasks?userId=${user.id}&from=${date}&to=${date}`
+      );
+      if (!res.ok)
+        throw new Error(`Failed to fetch tasks of the day : ${res.status}`);
+      const docs: DayDoc[] = await res.json();
+      setSelectedTasks(docs[0]?.tasks || []);
+    } catch (err) {
+      console.error("Error in fetching tasks for the date :", err);
+      setError("Failed to load tasks for the selected date");
+    }
   }
 
   async function handleAddTask(e: React.FormEvent) {
     e.preventDefault();
     if (!selectedDate || !newTask.trim() || !user) return;
 
-    await fetch("/api/tasks", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        userId: user.id,
-        title: newTask,
-        date: selectedDate,
-      }),
-    });
+    try {
+      const res = await fetch("/api/tasks", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          userId: user.id,
+          title: newTask,
+          date: selectedDate,
+        }),
+      });
+      if (!res.ok) throw new Error(`Failed to add task : ${res.status}`);
+      const { task } = await res.json();
 
-    // Refresh tasks for the selected day
-    const res = await fetch(
-      `/api/tasks?userId=${user.id}&from=${selectedDate}&to=${selectedDate}`
-    );
-    const docs: DayDoc[] = await res.json();
-    setSelectedTasks(docs[0]?.tasks || []);
-    setNewTask("");
+      // Refresh tasks for the selected day
+      setSelectedTasks((prev) => [...prev, task]);
 
-    // Also refresh heatmap counts
-    const updatedRes = await fetch(
-      `/api/tasks?userId=${user.id}&from=2025-01-01&to=2025-12-31`
-    );
-    const allDocs: DayDoc[] = await updatedRes.json();
-    const grouped: Record<string, number> = {};
-    allDocs.forEach((doc) => {
-      grouped[doc.date] = doc.tasks.length;
-    });
-    setValues(generateDateArray("2025-01-01", "2025-12-31").map((date) => ({
-      date,
-      count: grouped[date] || 0,
-    })));
+      // Also refresh heatmap counts
+      setValues((prev) =>
+        prev.map((v) =>
+          v.date === selectedDate ? { ...v, count: v.count + 1 } : v
+        )
+      );
+      setNewTask("");
+    } catch (err) {
+      console.log("error in adding task:", err);
+      setError("Failed to add task, try again maybe");
+    }
+  }
+
+  async function handleDeleteTask(taskId: string) {
+    if (!user || !selectedDate) return;
+
+    try {
+      const res = await fetch("/api/tasks", {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          id: taskId,
+          userId: user.id,
+          date: selectedDate,
+        }),
+      });
+      if (!res.ok) throw new Error(`Failed to delete task: ${res.status}`);
+
+      // Refresh tasks for the selected day
+      const taskRes = await fetch(
+        `/api/tasks?userId=${user.id}&from=${selectedDate}&to=${selectedDate}`
+      );
+      if (!taskRes.ok)
+        throw new Error(`Failed to refresh tasks: ${taskRes.status}`);
+      const docs: DayDoc[] = await taskRes.json();
+      setSelectedTasks(docs[0]?.tasks || []);
+
+      // Update heatmap for the selected date
+      setValues((prev) =>
+        prev.map((v) =>
+          v.date === selectedDate
+            ? { ...v, count: docs[0]?.tasks.length || 0 }
+            : v
+        )
+      );
+    } catch (err) {
+      console.error("Error deleting task:", err);
+      setError("Failed to delete task. Please try again.");
+    }
   }
 
   if (!isSignedIn) {
@@ -122,19 +189,25 @@ export default function Home() {
         <UserButton afterSignOutUrl="/" />
       </div>
 
+      {error && (
+        <div className="mb-4 p-2 bg-red-100 text-red-700 rounded">{error}</div>
+      )}
+
       <CalendarHeatmap
-        startDate={new Date("2025-01-01")}
-        endDate={new Date("2025-12-31")}
+        startDate={startDate}
+        endDate={endDate}
         values={values}
-        classForValue={(value) => {
+        classForValue={(value: HeatMapValue | null) => {
           if (!value) return "color-empty";
-          return `color-github-${Math.min(value.count, 4)}`;
+          return `color-github-${Math.min(value.count, 10)}`;
         }}
-        tooltipDataAttrs={(value) => ({
-          "data-tip": `${value.date || ""} : ${value?.count || 0} tasks`,
+        tooltipDataAttrs={(value: HeatMapValue | null) => ({
+          "data-tip": `${value?.date || ""} : ${value?.count || 0} tasks`,
         })}
         showWeekdayLabels
-        onClick={(value) => value?.date && handleClick(value.date)}
+        onClick={(value: HeatMapValue | null) =>
+          value?.date && handleClick(value.date)
+        }
       />
 
       {selectedDate && (
@@ -147,7 +220,21 @@ export default function Home() {
               <li className="text-gray-500">No tasks yet</li>
             )}
             {selectedTasks.map((task, i) => (
-              <li key={i}>{task.title}</li>
+              <li
+                key={task._id || i}
+                className="flex justify-between items-center"
+              >
+                <span>{task.title}</span>
+                <button
+                  onClick={() => task._id && handleDeleteTask(task._id)}
+                  className={`text-red-500 hover:text-red-700 ${
+                    !task._id ? "opacity-50 cursor-not-allowed" : ""
+                  }`}
+                  disabled={!task._id}
+                >
+                  Delete
+                </button>
+              </li>
             ))}
           </ul>
 

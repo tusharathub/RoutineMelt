@@ -12,16 +12,22 @@ export async function POST(req: Request) {
     const client = await clientPromise;
     const db = client.db("RoutineMelt");
 
-    const task = {
-      userId,
-      title,
-      date, // YYYY-MM-DD
-      createdAt: new Date(),
-    };
+    interface TaskDocument {
+      userId: string;
+      date: string;
+      tasks: { title: string; createdAt: Date }[];
+    }
 
-    await db.collection("tasks").insertOne(task);
+    const result = await db.collection<TaskDocument>("tasks").updateOne(
+      { userId, date }, 
+      {
+        $push: { tasks: { title, createdAt: new Date() } },
+        $setOnInsert: { userId, date },
+      },
+      { upsert: true }
+    );
 
-    return NextResponse.json({ success: true, task });
+    return NextResponse.json({ success: true, result });
   } catch (err) {
     return NextResponse.json({ error: "Server error" }, { status: 500 });
   }
@@ -47,6 +53,7 @@ export async function GET(req: Request) {
         userId,
         date: { $gte: from, $lte: to },
       })
+      .sort({date : 1})
       .toArray();
 
     return NextResponse.json(tasks);

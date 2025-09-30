@@ -85,3 +85,32 @@ export async function DELETE(req: Request) {
     return NextResponse.json({error :"Server error"}, {status: 500})
   }
 }
+
+export async function PUT(req : Request) {
+  try{
+    const {id, title, date} = await req.json();
+
+    if(!id || !title || !date) {
+      return NextResponse.json({error : "Missing fields"}, {status: 400});
+    }
+
+    const client = await clientPromise;
+    const db = client.db("RoutineMelt");
+
+    const update: Record<string, any> = {};
+    if(title) update.title = title;
+    if(date) update.date = date;
+
+    const result = await db
+    .collection("tasks")
+    .updateOne({_id: new ObjectId(id)}, {$set: update});
+
+    if(result.matchedCount === 0) {
+      return NextResponse.json({error : "Task not found"}, {status: 404});
+    }
+
+    return NextResponse.json({success : true, updateId : id, update});
+  } catch (err) {
+    return NextResponse.json({error : "server error"}, {status : 500});
+  }
+}

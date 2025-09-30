@@ -1,4 +1,5 @@
 import clientPromise from "@/app/lib/mongodb";
+import { ObjectId } from "mongodb";
 import { NextResponse } from "next/server";
 
 export async function POST(req: Request) {
@@ -59,5 +60,28 @@ export async function GET(req: Request) {
     return NextResponse.json(tasks);
   } catch (err) {
     return NextResponse.json({ error: "Server error" }, { status: 500 });
+  }
+}
+
+export async function DELETE(req: Request) {
+  try{
+    const {id} = await req.json();
+
+    if(!id) {
+      return NextResponse.json({error : "Task ID is missing"}, {status: 400});
+    }
+
+    const client = await clientPromise;
+    const db =  client.db("RoutineMelt");
+
+    const result = await db.collection("tasks").deleteOne({_id: new ObjectId(id)})
+
+    if(result.deletedCount === 0) {
+      return NextResponse.json({error : "No task found with that ID"}, {status: 400});  
+    }
+
+    return NextResponse.json({success: true, result});
+  } catch(err) {
+    return NextResponse.json({error :"Server error"}, {status: 500})
   }
 }

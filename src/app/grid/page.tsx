@@ -1,15 +1,19 @@
 "use client";
+
 import CalendarHeatmap from "react-calendar-heatmap";
 import "react-calendar-heatmap/dist/styles.css";
 import { useState, useEffect } from "react";
 import { useUser, SignInButton, UserButton } from "@clerk/nextjs";
+
+type Task = { title: string; createdAt: string };
+type DayDoc = { date: string; tasks: Task[] };
 
 export default function Home() {
   const { user, isSignedIn } = useUser();
 
   const [values, setValues] = useState<{ date: string; count: number }[]>([]);
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
-  const [tasks, setTasks] = useState<any[]>([]);
+  const [selectedTasks, setSelectedTasks] = useState<Task[]>([]);
   const [newTask, setNewTask] = useState("");
 
   // Load heatmap data
@@ -21,11 +25,12 @@ export default function Home() {
       const res = await fetch(
         `/api/tasks?userId=${user.id}&from=2025-01-01&to=2025-12-31`
       );
-      const data = await res.json();
+      const docs: DayDoc[] = await res.json();
 
+      // Map into heatmap values
       const grouped: Record<string, number> = {};
-      data.forEach((task: any) => {
-        grouped[task.date] = (grouped[task.date] || 0) + 1;
+      docs.forEach((doc) => {
+        grouped[doc.date] = doc.tasks.length;
       });
 
       const allDates = generateDateArray("2025-01-01", "2025-12-31");
@@ -54,9 +59,11 @@ export default function Home() {
     setSelectedDate(date);
     if (!user) return;
 
-    const res = await fetch(`/api/tasks/${date}?userId=${user.id}`);
-    const data = await res.json();
-    setTasks(data);
+    const res = await fetch(
+      `/api/tasks?userId=${user.id}&from=${date}&to=${date}`
+    );
+    const docs: DayDoc[] = await res.json();
+    setSelectedTasks(docs[0]?.tasks || []);
   }
 
   async function handleAddTask(e: React.FormEvent) {
@@ -73,10 +80,27 @@ export default function Home() {
       }),
     });
 
-    const res = await fetch(`/api/tasks/${selectedDate}?userId=${user.id}`);
-    const data = await res.json();
-    setTasks(data);
+    // Refresh tasks for the selected day
+    const res = await fetch(
+      `/api/tasks?userId=${user.id}&from=${selectedDate}&to=${selectedDate}`
+    );
+    const docs: DayDoc[] = await res.json();
+    setSelectedTasks(docs[0]?.tasks || []);
     setNewTask("");
+
+    // Also refresh heatmap counts
+    const updatedRes = await fetch(
+      `/api/tasks?userId=${user.id}&from=2025-01-01&to=2025-12-31`
+    );
+    const allDocs: DayDoc[] = await updatedRes.json();
+    const grouped: Record<string, number> = {};
+    allDocs.forEach((doc) => {
+      grouped[doc.date] = doc.tasks.length;
+    });
+    setValues(generateDateArray("2025-01-01", "2025-12-31").map((date) => ({
+      date,
+      count: grouped[date] || 0,
+    })));
   }
 
   if (!isSignedIn) {
@@ -84,7 +108,7 @@ export default function Home() {
       <div className="flex items-center justify-center min-h-screen">
         <SignInButton mode="modal">
           <button className="bg-green-600 text-white px-4 py-2 rounded">
-            Sign In to Track Your Streaks
+            Sign In to see the progress
           </button>
         </SignInButton>
       </div>
@@ -94,7 +118,7 @@ export default function Home() {
   return (
     <div className="p-8">
       <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold">Your Streak Tracker</h1>
+        <h1 className="text-2xl font-bold">Your Progress Builder</h1>
         <UserButton afterSignOutUrl="/" />
       </div>
 
@@ -119,11 +143,11 @@ export default function Home() {
             Tasks for {selectedDate}
           </h2>
           <ul className="mb-4 list-disc list-inside">
-            {tasks.length === 0 && (
+            {selectedTasks.length === 0 && (
               <li className="text-gray-500">No tasks yet</li>
             )}
-            {tasks.map((task) => (
-              <li key={task._id}>{task.title}</li>
+            {selectedTasks.map((task, i) => (
+              <li key={i}>{task.title}</li>
             ))}
           </ul>
 

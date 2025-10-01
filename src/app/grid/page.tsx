@@ -4,6 +4,12 @@ import CalendarHeatmap from "react-calendar-heatmap";
 import "react-calendar-heatmap/dist/styles.css";
 import { useState, useEffect, useMemo } from "react";
 import { useUser, SignInButton, UserButton } from "@clerk/nextjs";
+import { motion } from "framer-motion";
+import { Calendar, Plus, Trash2 } from "lucide-react";
+
+// Define color theme
+const PRIMARY_COLOR = "indigo";
+const ACCENT_COLOR = "teal";
 
 type Task = { _id?: string; title: string; createdAt: string };
 type DayDoc = { date: string; tasks: Task[] };
@@ -18,7 +24,7 @@ export default function Home() {
   const [newTask, setNewTask] = useState("");
   const [error, setError] = useState<string | null>(null);
 
-  // 🔹 Compute dynamic start/end dates (past 11 months, next 1 month)
+  // start/end dates (past 11 months, next 1 month)
   const { startDate, endDate } = useMemo(() => {
     const today = new Date();
 
@@ -64,7 +70,7 @@ export default function Home() {
         setValues(mergedValues);
       } catch (err) {
         console.log("error in fetching heatMap data :", err);
-        setError("failed to load tasks");
+        setError("Failed to load tasks");
       }
     }
     fetchData();
@@ -172,88 +178,134 @@ export default function Home() {
 
   if (!isSignedIn) {
     return (
-      <div className="flex items-center justify-center min-h-screen">
+      <motion.div
+        className="flex items-center justify-center min-h-screen bg-gray-50 dark:bg-gray-950"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.6 }}
+      >
         <SignInButton mode="modal">
-          <button className="bg-green-600 text-white px-4 py-2 rounded">
-            Sign In to see the progress
+          <button
+            className={`flex items-center gap-2 px-6 py-3 bg-${ACCENT_COLOR}-400 text-${PRIMARY_COLOR}-900 rounded-lg shadow-lg hover:bg-${ACCENT_COLOR}-300 transition-transform transform hover:scale-105`}
+          >
+            <Plus className="w-5 h-5" />
+            Sign In to See Your Progress
           </button>
         </SignInButton>
-      </div>
+      </motion.div>
     );
   }
 
   return (
-    <div className="p-8">
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold">Your Progress Builder</h1>
+    <div className="p-6 mt-20 md:p-8 max-w-7xl mx-auto bg-white dark:bg-gray-900 rounded-xl shadow-lg border border-gray-100 dark:border-gray-800">
+      {/* Header */}
+      <motion.div
+        className="flex justify-between items-center mb-8"
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6 }}
+      >
+        <h1 className={`text-3xl font-bold text-${PRIMARY_COLOR}-600 dark:text-${ACCENT_COLOR}-400 flex items-center gap-2`}>
+          <Calendar className={`w-8 h-8 text-${ACCENT_COLOR}-400`} />
+          Your Progress Builder
+        </h1>
         <UserButton afterSignOutUrl="/" />
-      </div>
+      </motion.div>
 
+      {/* Error Message */}
       {error && (
-        <div className="mb-4 p-2 bg-red-100 text-red-700 rounded">{error}</div>
+        <motion.div
+          className="mb-6 p-4 bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-300 rounded-lg"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.4 }}
+        >
+          {error}
+        </motion.div>
       )}
 
-      <CalendarHeatmap
-        startDate={startDate}
-        endDate={endDate}
-        values={values}
-        classForValue={(value: HeatMapValue | null) => {
-          if (!value) return "color-empty";
-          return `color-github-${Math.min(value.count, 10)}`;
-        }}
-        tooltipDataAttrs={(value: HeatMapValue | null) => ({
-          "data-tip": `${value?.date || ""} : ${value?.count || 0} tasks`,
-        })}
-        showWeekdayLabels
-        onClick={(value: HeatMapValue | null) =>
-          value?.date && handleClick(value.date)
-        }
-      />
+      {/* Calendar Heatmap */}
+      <motion.div
+        className="bg-white dark:bg-gray-950 p-6 rounded-lg shadow-md border border-gray-100 dark:border-gray-800"
+        initial={{ opacity: 0, scale: 0.95 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ duration: 0.6 }}
+      >
+        <CalendarHeatmap
+          startDate={startDate}
+          endDate={endDate}
+          values={values}
+          classForValue={(value: HeatMapValue | null) => {
+            if (!value) return "color-empty";
+            return `color-github-${Math.min(value.count, 10)}`;
+          }}
+          tooltipDataAttrs={(value: HeatMapValue | null) => ({
+            "data-tip": `${value?.date || ""} : ${value?.count || 0} tasks`,
+          })}
+          showWeekdayLabels
+          onClick={(value: HeatMapValue | null) =>
+            value?.date && handleClick(value.date)
+          }
+        />
+      </motion.div>
 
+      {/* Task Section */}
       {selectedDate && (
-        <div className="mt-6 p-4 border rounded-lg shadow bg-white">
-          <h2 className="text-xl font-semibold mb-2">
+        <motion.div
+          className="mt-8 p-6 bg-white dark:bg-gray-900 rounded-lg shadow-lg border border-gray-100 dark:border-gray-800"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+        >
+          <h2 className="text-xl md:text-2xl font-semibold mb-4 text-gray-900 dark:text-white flex items-center gap-2">
+            <Calendar className={`w-6 h-6 text-${ACCENT_COLOR}-400`} />
             Tasks for {selectedDate}
           </h2>
-          <ul className="mb-4 list-disc list-inside">
+          <ul className="mb-6 space-y-3">
             {selectedTasks.length === 0 && (
-              <li className="text-gray-500">No tasks yet</li>
+              <li className="text-gray-500 dark:text-gray-400">No tasks yet</li>
             )}
             {selectedTasks.map((task, i) => (
-              <li
+              <motion.li
                 key={task._id || i}
-                className="flex justify-between items-center"
+                className="flex justify-between items-center p-3 bg-gray-50 dark:bg-gray-800 rounded-lg"
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.4, delay: i * 0.1 }}
               >
-                <span>{task.title}</span>
+                <span className="text-gray-900 dark:text-white">{task.title}</span>
                 <button
                   onClick={() => task._id && handleDeleteTask(task._id)}
-                  className={`text-red-500 hover:text-red-700 ${
+                  className={`flex items-center gap-1 text-red-500 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300 ${
                     !task._id ? "opacity-50 cursor-not-allowed" : ""
                   }`}
                   disabled={!task._id}
                 >
+                  <Trash2 className="w-5 h-5" />
                   Delete
                 </button>
-              </li>
+              </motion.li>
             ))}
           </ul>
 
-          <form onSubmit={handleAddTask} className="flex gap-2">
+          {/* Task Form */}
+          <form onSubmit={handleAddTask} className="flex gap-3">
             <input
               type="text"
               value={newTask}
               onChange={(e) => setNewTask(e.target.value)}
               placeholder="Add new task..."
-              className="border rounded px-2 py-1 flex-1"
+              className={`flex-1 border border-gray-300 dark:border-gray-700 rounded-lg px-4 py-2 bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-${ACCENT_COLOR}-400`}
             />
             <button
               type="submit"
-              className="bg-green-600 text-white px-3 py-1 rounded"
+              className={`flex items-center gap-2 px-4 py-2 bg-${ACCENT_COLOR}-400 text-${PRIMARY_COLOR}-900 rounded-lg hover:bg-${ACCENT_COLOR}-300 transition-transform transform hover:scale-105`}
             >
+              <Plus className="w-5 h-5" />
               Add
             </button>
           </form>
-        </div>
+        </motion.div>
       )}
     </div>
   );

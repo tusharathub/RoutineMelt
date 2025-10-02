@@ -5,10 +5,6 @@ import { useState } from "react";
 import { motion } from "framer-motion";
 import { Zap, Activity, Calendar, Trophy } from "lucide-react";
 
-// Define color theme
-const PRIMARY_COLOR = "indigo";
-const ACCENT_COLOR = "teal";
-
 export default function LandingPage() {
   const currentYear = new Date().getFullYear();
 
@@ -17,7 +13,7 @@ export default function LandingPage() {
       {/* Header/Nav */}
       <header className="sticky top-0 z-50 bg-white/90 dark:bg-gray-950/90 backdrop-blur-sm shadow-sm">
         <div className="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
-          <h2 className={`text-2xl font-bold text-${PRIMARY_COLOR}-600 dark:text-${ACCENT_COLOR}-400`}>
+          <h2 className={`text-2xl font-bold text-black `}>
             RoutineMelt
           </h2>
           <nav className="hidden md:flex space-x-6">
@@ -29,14 +25,14 @@ export default function LandingPage() {
       </header>
 
       {/* Hero Section */}
-      <section className={`bg-${PRIMARY_COLOR}-600 text-white py-28 px-6 text-center border-b-8 border-${ACCENT_COLOR}-400`}>
+      <section className={`bg-gray-50 text-black py-28 px-6 text-center `}>
         <div className="max-w-4xl mx-auto">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
           >
-            <Zap className={`w-12 h-12 mx-auto mb-4 text-${ACCENT_COLOR}-400`} />
+            <Zap className={`w-12 h-12 mx-auto mb-4 text-black`} />
             <h1 className="text-5xl md:text-6xl font-extrabold tracking-tight">
               Stop Planning. Start <strong>Doing.</strong>
             </h1>
@@ -46,7 +42,7 @@ export default function LandingPage() {
             <div className="mt-10 flex justify-center gap-4">
               <Link
                 href="/grid"
-                className={`px-8 py-4 bg-white text-indigo-900 text-lg font-bold rounded-xl shadow-2xl shadow-${ACCENT_COLOR}-500/50 hover:bg-${ACCENT_COLOR}-300 transition transform hover:scale-105`}
+                className={`px-8 py-4 bg-white text-black text-lg font-bold rounded-xl shadow-2xl  hover:bg-gray-50 transition transform hover:scale-110`}
               >
                 Start Building Your Streak (It's Free!)
               </Link>
@@ -56,7 +52,7 @@ export default function LandingPage() {
       </section>
 
       {/* Features */}
-      <section id="features" className="py-20 px-6 max-w-7xl mx-auto">
+      <section id="features" className="py-20 px-6 max-w-7xl mx-auto  ">
         <motion.h2 
           className="text-3xl md:text-4xl font-bold text-center text-gray-900 dark:text-white mb-16"
           initial={{ opacity: 0 }}
@@ -71,25 +67,21 @@ export default function LandingPage() {
               Icon: Calendar,
               title: "The Streak Grid",
               description: "A minimalist, annual calendar view that instantly shows your daily consistency. Green means go!",
-              color: PRIMARY_COLOR
             },
             {
               Icon: Trophy,
               title: "Gamified Progress",
               description: "Track your longest streaks and earn badges. Never miss a day and keep the chain strong.",
-              color: ACCENT_COLOR
             },
             {
               Icon: Activity,
               title: "Simple Daily Log",
               description: "Click a square to log tasks, track completion, and see your history without the clutter of a large To-Do list.",
-              color: PRIMARY_COLOR
             },
             {
               Icon: Zap,
               title: "Next.js Performance",
               description: "Blazing fast and reliable, built on the modern Next.js stack with MongoDB for secure, stable data.",
-              color: ACCENT_COLOR
             }
           ].map((feature, index) => (
             <motion.div
@@ -102,7 +94,6 @@ export default function LandingPage() {
                 Icon={feature.Icon}
                 title={feature.title}
                 description={feature.description}
-                color={feature.color}
               />
             </motion.div>
           ))}
@@ -117,7 +108,7 @@ export default function LandingPage() {
             whileInView={{ opacity: 1 }}
             transition={{ duration: 0.6 }}
           >
-            <span className={`text-sm font-semibold uppercase text-${ACCENT_COLOR}-600 dark:text-${ACCENT_COLOR}-400`}>
+            <span className={`text-sm font-semibold uppercase text-black `}>
               Social Proof
             </span>
             <h2 className="text-3xl font-bold text-gray-900 dark:text-white mt-3 mb-8">
@@ -175,7 +166,7 @@ export default function LandingPage() {
               transition={{ duration: 0.6, delay: index * 0.2 }}
             >
               <h3 className="text-xl font-semibold mb-2 text-gray-900 dark:text-white">{plan.plan}</h3>
-              <p className={`text-3xl font-bold text-${PRIMARY_COLOR}-600 dark:text-${ACCENT_COLOR}-400 mb-4`}>{plan.price}</p>
+              <p className={`text-3xl font-bold text-black mb-4`}>{plan.price}</p>
               <ul className="text-gray-600 dark:text-gray-400 mb-6">
                 {plan.features.map((feature, i) => (
                   <li key={i} className="mb-2">{feature}</li>
@@ -183,7 +174,7 @@ export default function LandingPage() {
               </ul>
               <Link
                 href="/signup"
-                className={`px-6 py-3 bg-${ACCENT_COLOR}-400 text-${PRIMARY_COLOR}-900 rounded-lg hover:bg-${ACCENT_COLOR}-300 transition-transform transform hover:scale-105`}
+                className={`px-6 py-3 bg-gray-100 text-black rounded-lg hover:bg-gray-200 transition-transform transform hover:scale-105`}
               >
                 {plan.cta}
               </Link>
@@ -193,7 +184,7 @@ export default function LandingPage() {
       </section>
 
       {/* Call To Action */}
-      <section id="cta" className={`py-20 px-6 bg-${PRIMARY_COLOR}-700 text-black`}>
+      <section id="cta" className={`py-20 px-6 bg-gray-200 text-black`}>
         <div className="max-w-4xl mx-auto text-center">
           <motion.h2 
             className="text-3xl md:text-4xl font-bold mb-4"
@@ -218,7 +209,7 @@ export default function LandingPage() {
           >
             <Link
               href="/grid"
-              className={`px-10 py-4 bg-${ACCENT_COLOR}-400 text-${PRIMARY_COLOR}-900 text-xl font-bold rounded-xl shadow-lg hover:bg-${ACCENT_COLOR}-300 transition transform hover:scale-105`}
+              className={`px-10 py-4 bg-gray-100 text-black text-xl font-bold rounded-xl shadow-lg hover:bg-gray-50 transition transform hover:scale-105`}
             >
               Get Started Now
             </Link>
@@ -264,12 +255,11 @@ interface FeatureCardProps {
   Icon: React.ElementType;
   title: string;
   description: string;
-  color: string;
 }
 
-const FeatureCard: React.FC<FeatureCardProps> = ({ Icon, title, description, color }) => (
+const FeatureCard: React.FC<FeatureCardProps> = ({ Icon, title, description }) => (
   <div className="bg-white dark:bg-gray-900 p-8 rounded-xl shadow-lg hover:shadow-2xl transform hover:-translate-y-1 transition duration-300 border border-gray-100 dark:border-gray-800">
-    <Icon className={`w-8 h-8 mb-4 text-${color}-600 dark:text-${color}-400`} />
+    <Icon className={`w-8 h-8 mb-4 text-black dark:text-gray-800`} />
     <h3 className="text-xl font-semibold mb-3 text-gray-900 dark:text-white">{title}</h3>
     <p className="text-gray-600 dark:text-gray-400 leading-relaxed">{description}</p>
   </div>

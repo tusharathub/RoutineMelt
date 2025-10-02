@@ -77,6 +77,7 @@ export default function LandingPage() {
               Icon: Trophy,
               title: "Gamified Progress",
               description: "Track your longest streaks and earn badges. Never miss a day and keep the chain strong.",
+              color: ACCENT_COLOR
             },
             {
               Icon: Activity,
@@ -143,7 +144,7 @@ export default function LandingPage() {
           whileInView={{ opacity: 1 }}
           transition={{ duration: 0.6 }}
         >
-          It is FREE (pricing just to fill space)
+          It is FREE (pricing is just to fill space)
         </motion.h2>
         <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
           {[

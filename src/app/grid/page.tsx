@@ -186,7 +186,7 @@ export default function Home() {
       >
         <SignInButton mode="modal">
           <button
-            className={`flex items-center gap-2 px-6 py-3 bg-${ACCENT_COLOR}-400 text-${PRIMARY_COLOR}-900 rounded-lg shadow-lg hover:bg-${ACCENT_COLOR}-300 transition-transform transform hover:scale-105`}
+            className={`flex items-center gap-2 px-6 py-3 text-black rounded-lg shadow-lg hover:bg-gray-100 transition-transform transform hover:scale-105`}
           >
             <Plus className="w-5 h-5" />
             Sign In to See Your Progress
@@ -205,8 +205,8 @@ export default function Home() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6 }}
       >
-        <h1 className={`text-3xl font-bold text-${PRIMARY_COLOR}-600 dark:text-${ACCENT_COLOR}-400 flex items-center gap-2`}>
-          <Calendar className={`w-8 h-8 text-${ACCENT_COLOR}-400`} />
+        <h1 className={`text-3xl font-bold text-black flex items-center gap-2`}>
+          <Calendar className={`w-8 h-8 text-black`} />
           Your Progress Builder
         </h1>
         <UserButton afterSignOutUrl="/" />
@@ -258,7 +258,7 @@ export default function Home() {
           transition={{ duration: 0.6 }}
         >
           <h2 className="text-xl md:text-2xl font-semibold mb-4 text-gray-900 dark:text-white flex items-center gap-2">
-            <Calendar className={`w-6 h-6 text-${ACCENT_COLOR}-400`} />
+            <Calendar className={`w-6 h-6 text-black`} />
             Tasks for {selectedDate}
           </h2>
           <ul className="mb-6 space-y-3">
@@ -295,11 +295,11 @@ export default function Home() {
               value={newTask}
               onChange={(e) => setNewTask(e.target.value)}
               placeholder="Add new task..."
-              className={`flex-1 border border-gray-300 dark:border-gray-700 rounded-lg px-4 py-2 bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-${ACCENT_COLOR}-400`}
+              className={`flex-1 border border-gray-300 dark:border-gray-700 rounded-lg px-4 py-2 bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-gray-100`}
             />
             <button
               type="submit"
-              className={`flex items-center gap-2 px-4 py-2 bg-${ACCENT_COLOR}-400 text-${PRIMARY_COLOR}-900 rounded-lg hover:bg-${ACCENT_COLOR}-300 transition-transform transform hover:scale-105`}
+              className={`flex items-center gap-2 px-4 py-2 bg-gray-100 text-black rounded-lg hover:bg-gray-200 transition-transform transform hover:scale-105`}
             >
               <Plus className="w-5 h-5" />
               Add

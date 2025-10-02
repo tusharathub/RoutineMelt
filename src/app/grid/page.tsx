@@ -238,9 +238,8 @@ export default function Home() {
             if (!value) return "color-empty";
             return `color-github-${Math.min(value.count, 10)}`;
           }}
-          tooltipDataAttrs={(value) => ({
-          "data-tip": `${value?.date}: ${value?.count || 0} tasks`
-          }) as any }
+          tooltipDataAttrs={(value): {[key: string]: string} => ({
+          "data-tip": `${value?.date}: ${value?.count || 0} tasks`}) }
           showWeekdayLabels
           onClick={(value?: HeatMapValue ) =>
             value?.date && handleClick(value.date)

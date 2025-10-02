@@ -1,7 +1,6 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
 import { motion } from "framer-motion";
 import { Zap, Activity, Calendar, Trophy } from "lucide-react";
 
@@ -44,7 +43,7 @@ export default function LandingPage() {
                 href="/grid"
                 className={`px-8 py-4 bg-white text-black text-lg font-bold rounded-xl shadow-2xl  hover:bg-gray-50 transition transform hover:scale-110`}
               >
-                Start Building Your Streak (It's Free!)
+                Start Building Your Streak (It is Free!)
               </Link>
             </div>
           </motion.div>
@@ -112,7 +111,7 @@ export default function LandingPage() {
               Social Proof
             </span>
             <h2 className="text-3xl font-bold text-gray-900 dark:text-white mt-3 mb-8">
-              "The simplest, most effective habit tracker I've ever used."
+              The simplest, most effective habit tracker I&apos;ve ever used.
             </h2>
             <div className="flex items-center justify-center space-x-4">
               <div className="w-16 h-16 bg-gray-300 rounded-full flex items-center justify-center text-gray-600 text-xl font-bold">

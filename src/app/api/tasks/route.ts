@@ -32,6 +32,7 @@ export async function POST(req: Request) {
 
     return NextResponse.json({ success: true, task: newTask, result });
   } catch (err) {
+    console.log("Server error", err)
     return NextResponse.json({ error: "Server error" }, { status: 500 });
   }
 }
@@ -104,7 +105,7 @@ export async function PUT(req : Request) {
     const client = await clientPromise;
     const db = client.db("RoutineMelt");
 
-    const update: Record<string, any> = {};
+    const update: Record<string, unknown> = {};
     if(title) update.title = title;
     if(date) update.date = date;
 
@@ -118,6 +119,7 @@ export async function PUT(req : Request) {
 
     return NextResponse.json({success : true, updateId : id, update});
   } catch (err) {
+    console.log("Server error", err);
     return NextResponse.json({error : "server error"}, {status : 500});
   }
 }

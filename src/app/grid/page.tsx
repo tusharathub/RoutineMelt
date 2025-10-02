@@ -1,19 +1,17 @@
 "use client";
 
-import CalendarHeatmap from "react-calendar-heatmap";
+import CalendarHeatmap, { ReactCalendarHeatmapValue } from "react-calendar-heatmap";
 import "react-calendar-heatmap/dist/styles.css";
 import { useState, useEffect, useMemo } from "react";
 import { useUser, SignInButton, UserButton } from "@clerk/nextjs";
 import { motion } from "framer-motion";
 import { Calendar, Plus, Trash2 } from "lucide-react";
 
-// Define color theme
-const PRIMARY_COLOR = "indigo";
-const ACCENT_COLOR = "teal";
-
 type Task = { _id?: string; title: string; createdAt: string };
 type DayDoc = { date: string; tasks: Task[] };
-type HeatMapValue = { date: string; count: number };
+// type HeatMapValue = { date: string; count: number };
+type HeatMapValue = ReactCalendarHeatmapValue<string>;
+
 
 export default function Home() {
   const { user, isSignedIn } = useUser();
@@ -49,6 +47,7 @@ export default function Home() {
         const from = startDate.toISOString().split("T")[0];
         const to = endDate.toISOString().split("T")[0];
 
+        if(!user) throw new Error("User not found");
         const res = await fetch(
           `/api/tasks?userId=${user.id}&from=${from}&to=${to}`
         );
@@ -78,7 +77,7 @@ export default function Home() {
 
   function generateDateArray(start: string, end: string) {
     const arr: string[] = [];
-    let current = new Date(start);
+    const current = new Date(start);
     const endDate = new Date(end);
     while (current <= endDate) {
       arr.push(current.toISOString().split("T")[0]);
@@ -235,15 +234,15 @@ export default function Home() {
           startDate={startDate}
           endDate={endDate}
           values={values}
-          classForValue={(value: HeatMapValue | null) => {
+          classForValue={(value?: HeatMapValue ) => {
             if (!value) return "color-empty";
             return `color-github-${Math.min(value.count, 10)}`;
           }}
-          tooltipDataAttrs={(value: HeatMapValue | null) => ({
-            "data-tip": `${value?.date || ""} : ${value?.count || 0} tasks`,
-          })}
+          tooltipDataAttrs={(value) => ({
+          "data-tip": `${value?.date}: ${value?.count || 0} tasks`
+          }) as any }
           showWeekdayLabels
-          onClick={(value: HeatMapValue | null) =>
+          onClick={(value?: HeatMapValue ) =>
             value?.date && handleClick(value.date)
           }
         />

@@ -1,6 +1,8 @@
 # 🌱 RoutineMelt  
 A GitHub-like **habit & task tracker** that helps you stay consistent by logging your daily tasks and visualizing progress with a **contribution heatmap**.
 
+### Live link : https://routine-melt.vercel.app/
+
 ## ✨ Features
 
 - 🔑 **Authentication with Clerk** – Secure login/sign-up.  

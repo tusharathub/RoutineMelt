@@ -136,7 +136,7 @@ export default function LandingPage() {
           <div className="pb-6 md:pb-0 md:pr-10">
             <span className="text-theme-primary block mb-3 font-bold tracking-wider">01 // THE PSYCHOLOGY</span>
             <p className="normal-case font-normal text-theme-fg/90 leading-relaxed text-sm max-w-md">
-              Consistency beats intensity. RoutineMelt focuses on visual momentum—showing you that progress isn&apos;t about perfect days, but about never breaking the chain.
+              Consistency beats intensity. RoutineMelt focuses on visual momentum and showing you that progress isn&apos;t about perfect days, but about never breaking the chain.
             </p>
           </div>
 
@@ -326,76 +326,35 @@ export default function LandingPage() {
           </blockquote>
           <div className="flex items-center justify-center gap-3">
             <span className="w-10 h-10 rounded-full bg-theme-primary text-theme-bg flex items-center justify-center font-bold text-sm">
-              JD
+              CM
             </span>
             <div className="text-left">
-              <p className="text-sm font-bold uppercase text-theme-fg">Jane Doe</p>
+              <p className="text-sm font-bold uppercase text-theme-fg">Carl MacLanen</p>
               <p className="text-xs text-theme-fg/60 uppercase font-semibold">Creator & Consistency Builder</p>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Pricing Editorial Table */}
-      <section id="pricing" className="w-full py-20 px-6">
-        <div className="max-w-6xl mx-auto">
-          <h2 className="text-xs font-bold uppercase tracking-wider text-theme-primary mb-12 text-center">
-            Melt Plans / Clear Specifications
+      {/* Free Plan Statement */}
+      <section id="pricing" className="w-full py-20 px-6 border-b border-theme-primary bg-theme-bg">
+        <div className="max-w-4xl mx-auto text-center">
+          <span className="text-xs font-bold uppercase tracking-wider text-theme-primary">
+            03 // PRICING AND ACCESSIBILITY
+          </span>
+          <h2 className="text-4xl md:text-6xl font-black tracking-tighter uppercase mt-6 mb-8 text-theme-fg">
+            FOREVER FREE.
           </h2>
-          
-          <div className="grid grid-cols-1 md:grid-cols-3 border border-theme-primary">
-            {/* Free */}
-            <div className="p-8 border-b md:border-b-0 md:border-r border-theme-primary flex flex-col justify-between">
-              <div>
-                <span className="text-xs font-bold uppercase text-theme-fg/50">Plan 01</span>
-                <h3 className="text-2xl font-black uppercase text-theme-fg mt-1 mb-2">Free</h3>
-                <div className="text-4xl font-black text-theme-primary my-4">$0</div>
-                <ul className="space-y-2 text-sm text-theme-fg/70 my-6 font-semibold uppercase tracking-tight">
-                  <li>• Basic annual grid</li>
-                  <li>• 1 user account</li>
-                  <li>• core streak tracking</li>
-                </ul>
-              </div>
-              <Link href="/grid" className="w-full py-3 bg-theme-primary text-theme-bg text-center font-bold uppercase text-xs hover:opacity-90 transition cursor-pointer">
-                Get Started
-              </Link>
-            </div>
-
-            {/* Pro */}
-            <div className="p-8 border-b md:border-b-0 md:border-r border-theme-primary flex flex-col justify-between bg-theme-primary/5">
-              <div>
-                <span className="text-xs font-bold uppercase text-theme-primary">Plan 02 / Recommended</span>
-                <h3 className="text-2xl font-black uppercase text-theme-fg mt-1 mb-2">Pro</h3>
-                <div className="text-4xl font-black text-theme-primary my-4">$4.99<span className="text-sm font-normal">/mo</span></div>
-                <ul className="space-y-2 text-sm text-theme-fg/70 my-6 font-semibold uppercase tracking-tight">
-                  <li>• Advanced annual grid</li>
-                  <li>• Custom theme overrides</li>
-                  <li>• Rich analytics logs</li>
-                  <li>• Priority support line</li>
-                </ul>
-              </div>
-              <Link href="/grid" className="w-full py-3 bg-theme-fg text-theme-bg text-center font-bold uppercase text-xs hover:opacity-90 transition cursor-pointer">
-                Choose Pro
-              </Link>
-            </div>
-
-            {/* Team */}
-            <div className="p-8 flex flex-col justify-between">
-              <div>
-                <span className="text-xs font-bold uppercase text-theme-fg/50">Plan 03</span>
-                <h3 className="text-2xl font-black uppercase text-theme-fg mt-1 mb-2">Team</h3>
-                <div className="text-4xl font-black text-theme-primary my-4">$8.99<span className="text-sm font-normal">/mo</span></div>
-                <ul className="space-y-2 text-sm text-theme-fg/70 my-6 font-semibold uppercase tracking-tight">
-                  <li>• Shared team grids</li>
-                  <li>• Multi-user workspace</li>
-                  <li>• Organization analytics</li>
-                  <li>• 24/7 dedicated support</li>
-                </ul>
-              </div>
-              <Link href="/grid" className="w-full py-3 bg-theme-primary text-theme-bg text-center font-bold uppercase text-xs hover:opacity-90 transition cursor-pointer">
-                Choose Team
-              </Link>
-            </div>
+          <p className="text-sm uppercase tracking-tight font-semibold max-w-xl mx-auto text-theme-fg/80 leading-relaxed mb-8">
+            RoutineMelt is built on the belief that simple self-improvement tools should be accessible to everyone. There are no pricing tiers, paywalls, or hidden tracking scripts. Keep your streak alive without barriers.
+          </p>
+          <div className="flex justify-center">
+            <Link 
+              href="/grid"
+              className="px-8 py-4 bg-theme-primary text-theme-bg text-xs font-black uppercase tracking-wider hover:opacity-90 transition cursor-pointer"
+            >
+              CREATE YOUR STREAK BOARD
+            </Link>
           </div>
         </div>
       </section>
@@ -419,7 +378,7 @@ export default function LandingPage() {
         
         {/* Abstract background logo watermark */}
         <div className="absolute right-0 bottom-0 text-[35vw] font-black leading-none select-none text-theme-bg/10 translate-x-20 translate-y-36 tracking-tighter pointer-events-none">
-          ++
+          ---
         </div>
       </section>
 
@@ -460,9 +419,6 @@ export default function LandingPage() {
         <div className="max-w-7xl mx-auto pt-6 border-t border-theme-fg/10 flex flex-col md:flex-row justify-between items-center gap-4 text-theme-fg/50 font-normal">
           <div>
             © {currentYear} RoutineMelt. Built with Next.js, Clerk, and MongoDB.
-          </div>
-          <div className="text-xs uppercase font-bold text-theme-primary">
-            VIBRANT RED & SAND DESIGN SYSTEM.
           </div>
         </div>
       </footer>

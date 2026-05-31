@@ -197,7 +197,7 @@ export default function Home() {
           transition={{ duration: 0.6 }}
         >
           <div className="text-3xl font-black tracking-tight text-theme-primary mb-2 select-none">
-            ++ RM.SECURE
+            RM.SECURE
           </div>
           <h2 className="text-xl font-bold uppercase tracking-tight text-theme-fg mb-4">
             Authorization Required
@@ -220,7 +220,7 @@ export default function Home() {
 
           {/* Abstract watermark */}
           <div className="absolute -right-6 -bottom-10 text-[10vw] font-black text-theme-primary/5 select-none pointer-events-none">
-            ++
+            --
           </div>
         </motion.div>
       </div>
@@ -234,7 +234,7 @@ export default function Home() {
         <div className="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
           {/* Logo */}
           <Link href="/" className="flex items-center gap-1 font-black text-theme-primary text-3xl hover:opacity-85 transition select-none tracking-tighter">
-            ++ <span className="text-xl font-bold tracking-tight text-theme-fg">RM</span>
+            ROUTINEMELT
           </Link>
           
           <nav className="flex items-center space-x-6">
@@ -282,7 +282,7 @@ export default function Home() {
       <div className="w-full border-t border-theme-primary">
         <div className="max-w-7xl mx-auto px-6 py-6 grid grid-cols-1 md:grid-cols-4 gap-8 text-xs font-semibold tracking-tight uppercase">
           <div className="text-theme-primary text-sm font-black">
-            RM.WORKSPACE
+            Your WORKSPACE
           </div>
           <div>
             <span className="text-theme-primary block mb-2 font-bold">Active User</span>
@@ -436,9 +436,6 @@ export default function Home() {
         <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4 text-theme-fg/50">
           <div>
             © {currentYear} RoutineMelt. Secured Workspace Environment.
-          </div>
-          <div className="text-xs uppercase font-bold text-theme-primary">
-            Brutalist Sand & Red Dashboard Core.
           </div>
         </div>
       </footer>

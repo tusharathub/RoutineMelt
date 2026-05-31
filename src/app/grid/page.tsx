@@ -228,26 +228,27 @@ export default function Home() {
   }
 
   return (
-    <main className="min-h-screen flex flex-col transition-colors duration-300 bg-theme-bg text-theme-fg border-theme-primary">
+    <main className="min-h-screen w-full max-w-full overflow-x-hidden flex flex-col transition-colors duration-300 bg-theme-bg text-theme-fg border-theme-primary">
       {/* Header/Nav */}
-      <header className="sticky top-0 z-50 bg-theme-bg/95 backdrop-blur-sm border-b border-theme-primary/30">
-        <div className="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+      <header className="sticky top-0 z-50 bg-theme-bg/95 backdrop-blur-sm border-b border-theme-primary/30 w-full">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-4 flex justify-between items-center">
           {/* Logo */}
-          <Link href="/" className="flex items-center gap-1 font-black text-theme-primary text-3xl hover:opacity-85 transition select-none tracking-tighter">
-            ROUTINEMELT
+          <Link href="/" className="font-black text-theme-primary text-xl sm:text-2xl md:text-3xl hover:opacity-85 transition select-none tracking-tighter">
+            <span className="sm:hidden">RM</span>
+            <span className="hidden sm:inline">ROUTINEMELT</span>
           </Link>
           
-          <nav className="flex items-center space-x-6">
-            <Link href="/" className="text-sm font-semibold tracking-tight uppercase hover:text-theme-primary transition">
+          <nav className="flex items-center gap-3 sm:gap-6">
+            <Link href="/" className="text-xs sm:text-sm font-semibold tracking-tight uppercase hover:text-theme-primary transition">
               Home
             </Link>
             
             {/* User profile dropdown & Theme switcher */}
-            <div className="flex items-center gap-4 pl-4 border-l border-theme-fg/10">
+            <div className="flex items-center gap-3 sm:gap-4 pl-3 sm:pl-4 border-l border-theme-fg/10">
               {/* Typographic Theme Toggle */}
               <button
                 onClick={() => setTheme(theme === "dark" ? "sand" : "dark")}
-                className="flex items-center gap-1.5 px-3 py-1.5 border border-theme-fg/20 hover:border-theme-primary transition rounded text-[10px] font-bold uppercase tracking-wider cursor-pointer select-none"
+                className="flex items-center gap-1 px-2 py-1 border border-theme-fg/20 hover:border-theme-primary transition rounded text-[9px] sm:text-[10px] font-bold uppercase tracking-wider cursor-pointer select-none"
               >
                 <span>Theme /</span>
                 <span className="text-theme-primary">{theme === "dark" ? "Dark" : "Light"}</span>
@@ -266,7 +267,7 @@ export default function Home() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
           >
-            <h1 className="text-[12vw] font-black leading-none tracking-tighter text-theme-primary select-none w-full uppercase">
+            <h1 className="text-5xl sm:text-[10vw] md:text-[12vw] font-black leading-none tracking-tighter text-theme-primary select-none w-full uppercase">
               Streaks.
             </h1>
           </motion.div>
@@ -275,7 +276,7 @@ export default function Home() {
 
       {/* Red Divider & Info Grid */}
       <div className="w-full border-t border-theme-primary">
-        <div className="max-w-7xl mx-auto px-6 py-6 grid grid-cols-1 md:grid-cols-4 gap-8 text-xs font-semibold tracking-tight uppercase">
+        <div className="max-w-7xl mx-auto px-6 py-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 text-xs font-semibold tracking-tight uppercase">
           <div className="text-theme-primary text-sm font-black">
             Your WORKSPACE
           </div>
@@ -322,7 +323,7 @@ export default function Home() {
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.6 }}
           >
-            <div className="flex items-center justify-between mb-6">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-6 gap-2">
               <span className="text-xs uppercase font-bold tracking-wider text-theme-primary">
                 Annual Streak Visualization (Click on cells to inspect)
               </span>
@@ -331,22 +332,26 @@ export default function Home() {
               </span>
             </div>
 
-            <CalendarHeatmap
-              startDate={startDate}
-              endDate={endDate}
-              values={values}
-              classForValue={(value?: HeatMapValue) => {
-                if (!value || !value.count) return "color-empty";
-                return `color-github-${Math.min(value.count, 10)}`;
-              }}
-              tooltipDataAttrs={(value?: HeatMapValue) => ({
-                "data-tip": `${value?.date || ""}: ${value?.count || 0} tasks`
-              } as SVGAttributes<SVGGElement>)}
-              showWeekdayLabels
-              onClick={(value?: HeatMapValue) =>
-                value?.date && handleClick(value.date)
-              }
-            />
+            <div className="w-full overflow-x-auto pb-4 scrollbar-thin">
+              <div className="min-w-[760px]">
+                <CalendarHeatmap
+                  startDate={startDate}
+                  endDate={endDate}
+                  values={values}
+                  classForValue={(value?: HeatMapValue) => {
+                    if (!value || !value.count) return "color-empty";
+                    return `color-github-${Math.min(value.count, 10)}`;
+                  }}
+                  tooltipDataAttrs={(value?: HeatMapValue) => ({
+                    "data-tip": `${value?.date || ""}: ${value?.count || 0} tasks`
+                  } as SVGAttributes<SVGGElement>)}
+                  showWeekdayLabels
+                  onClick={(value?: HeatMapValue) =>
+                    value?.date && handleClick(value.date)
+                  }
+                />
+              </div>
+            </div>
           </motion.div>
         </div>
       </section>
@@ -405,17 +410,17 @@ export default function Home() {
               </ul>
 
               {/* Task Add Form */}
-              <form onSubmit={handleAddTask} className="flex gap-4 items-center">
+              <form onSubmit={handleAddTask} className="flex flex-col sm:flex-row gap-4 sm:items-center">
                 <input
                   type="text"
                   value={newTask}
                   onChange={(e) => setNewTask(e.target.value)}
                   placeholder="Insert routine accomplishment description..."
-                  className="flex-1 border-b border-theme-fg/30 bg-transparent text-theme-fg focus:border-theme-primary outline-none py-2 text-sm uppercase tracking-tight font-semibold transition"
+                  className="w-full sm:flex-1 border-b border-theme-fg/30 bg-transparent text-theme-fg focus:border-theme-primary outline-none py-2 text-sm uppercase tracking-tight font-semibold transition"
                 />
                 <button
                   type="submit"
-                  className="px-6 py-3 bg-theme-primary text-theme-bg text-xs font-black uppercase tracking-widest hover:opacity-90 transition flex items-center gap-1 cursor-pointer"
+                  className="w-full sm:w-auto px-6 py-3 bg-theme-primary text-theme-bg text-xs font-black uppercase tracking-widest hover:opacity-90 transition flex items-center justify-center gap-1 cursor-pointer"
                 >
                   <Plus className="w-4 h-4" />
                   Add

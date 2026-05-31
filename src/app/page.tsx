@@ -72,35 +72,36 @@ export default function LandingPage() {
   };
 
   return (
-    <main className="min-h-screen flex flex-col transition-colors duration-300 bg-theme-bg text-theme-fg border-theme-primary">
+    <main className="min-h-screen w-full max-w-full overflow-x-hidden flex flex-col transition-colors duration-300 bg-theme-bg text-theme-fg border-theme-primary">
       {/* Header/Nav */}
-      <header className="sticky top-0 z-50 bg-theme-bg/95 backdrop-blur-sm border-b border-theme-primary/30">
-        <div className="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+      <header className="sticky top-0 z-50 bg-theme-bg/95 backdrop-blur-sm border-b border-theme-primary/30 w-full">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-4 flex justify-between items-center">
           {/* Logo */}
-          <Link href="/" className="flex items-center gap-1 font-black text-theme-primary text-3xl hover:opacity-85 transition select-none tracking-tighter">
-            ROUTINEMELT
+          <Link href="/" className="font-black text-theme-primary text-xl sm:text-2xl md:text-3xl hover:opacity-85 transition select-none tracking-tighter">
+            <span className="sm:hidden">RM</span>
+            <span className="hidden sm:inline">ROUTINEMELT</span>
           </Link>
           
-          <nav className="flex items-center space-x-6">
-            <a href="#features" className="text-sm font-semibold tracking-tight uppercase hover:text-theme-primary transition">Method</a>
-            <a href="#pricing" className="text-sm font-semibold tracking-tight uppercase hover:text-theme-primary transition">Pricing</a>
+          <nav className="flex items-center gap-3 sm:gap-6">
+            <a href="#features" className="hidden md:inline text-xs sm:text-sm font-semibold tracking-tight uppercase hover:text-theme-primary transition">Method</a>
+            <a href="#pricing" className="hidden md:inline text-xs sm:text-sm font-semibold tracking-tight uppercase hover:text-theme-primary transition">Pricing</a>
             {isSignedIn ? (
-              <Link href="/grid" className="text-sm font-bold tracking-tight uppercase border-b-2 border-theme-primary hover:opacity-80 transition pb-0.5">
+              <Link href="/grid" className="text-xs sm:text-sm font-bold tracking-tight uppercase border-b-2 border-theme-primary hover:opacity-80 transition pb-0.5">
                 Dashboard
               </Link>
             ) : (
               <SignInButton mode="modal">
-                <button className="text-sm font-bold tracking-tight uppercase border-b-2 border-theme-primary hover:opacity-80 transition pb-0.5 cursor-pointer">
+                <button className="text-xs sm:text-sm font-bold tracking-tight uppercase border-b-2 border-theme-primary hover:opacity-80 transition pb-0.5 cursor-pointer">
                   Sign In
                 </button>
               </SignInButton>
             )}
 
             {/* Typographic Theme Toggle */}
-            <div className="pl-4 border-l border-theme-fg/10">
+            <div className="pl-3 sm:pl-4 border-l border-theme-fg/10">
               <button
                 onClick={() => setTheme(theme === "dark" ? "sand" : "dark")}
-                className="flex items-center gap-1.5 px-3 py-1.5 border border-theme-fg/20 hover:border-theme-primary transition rounded text-[10px] font-bold uppercase tracking-wider cursor-pointer select-none"
+                className="flex items-center gap-1 px-2 py-1 border border-theme-fg/20 hover:border-theme-primary transition rounded text-[9px] sm:text-[10px] font-bold uppercase tracking-wider cursor-pointer select-none"
               >
                 <span>Theme /</span>
                 <span className="text-theme-primary">{theme === "dark" ? "Dark" : "Light"}</span>
@@ -111,7 +112,7 @@ export default function LandingPage() {
       </header>
 
       {/* Hero Section */}
-      <section className="w-full px-6 pt-12 md:pt-16 pb-6 text-center overflow-x-hidden">
+      <section className="w-full px-6 pt-12 md:pt-16 pb-6 text-center">
         <div className="max-w-7xl mx-auto">
           {/* Big Editorial Logo Title */}
           <motion.div
@@ -119,7 +120,7 @@ export default function LandingPage() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
           >
-            <h1 className="text-[12vw] font-black leading-none tracking-tighter text-theme-primary select-none w-full">
+            <h1 className="text-5xl sm:text-[10vw] md:text-[12vw] font-black leading-none tracking-tighter text-theme-primary select-none w-full">
               ROUTINEMELT.
             </h1>
           </motion.div>
@@ -189,25 +190,27 @@ export default function LandingPage() {
 
           {/* Grid Layout */}
           <div className="bg-theme-bg p-6 rounded-lg border border-theme-primary/30 shadow-sm relative overflow-hidden">
-            <div 
-              className="grid gap-1.5 w-full select-none"
-              style={{
-                gridTemplateRows: `repeat(${rows}, minmax(0, 1fr))`,
-                gridAutoFlow: "column"
-              }}
-            >
-              {simulatorGrid.map((isActive, index) => (
-                <div
-                  key={index}
-                  onClick={() => toggleCell(index)}
-                  className={`aspect-square w-full rounded-[2px] transition-all duration-150 cursor-pointer ${
-                    isActive 
-                      ? "bg-theme-primary hover:opacity-85 shadow-[0_0_8px_rgba(255,8,0,0.2)]" 
-                      : "bg-theme-fg/10 hover:bg-theme-fg/20"
-                  }`}
-                  title={`Log day ${Math.floor(index / rows) + 1}, row ${index % rows + 1}`}
-                />
-              ))}
+            <div className="w-full overflow-x-auto pb-4 scrollbar-thin">
+              <div 
+                className="grid gap-1.5 select-none min-w-[650px]"
+                style={{
+                  gridTemplateRows: `repeat(${rows}, minmax(0, 1fr))`,
+                  gridAutoFlow: "column"
+                }}
+              >
+                {simulatorGrid.map((isActive, index) => (
+                  <div
+                    key={index}
+                    onClick={() => toggleCell(index)}
+                    className={`aspect-square w-full rounded-[2px] transition-all duration-150 cursor-pointer ${
+                      isActive 
+                        ? "bg-theme-primary hover:opacity-85 shadow-[0_0_8px_rgba(255,8,0,0.2)]" 
+                        : "bg-theme-fg/10 hover:bg-theme-fg/20"
+                    }`}
+                    title={`Log day ${Math.floor(index / rows) + 1}, row ${index % rows + 1}`}
+                  />
+                ))}
+              </div>
             </div>
 
             {/* Sim Stats */}

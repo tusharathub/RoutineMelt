@@ -329,7 +329,7 @@ export default function LandingPage() {
               CM
             </span>
             <div className="text-left">
-              <p className="text-sm font-bold uppercase text-theme-fg">Carl MacLanen</p>
+              <p className="text-sm font-bold uppercase text-theme-fg">Carl MacLaren</p>
               <p className="text-xs text-theme-fg/60 uppercase font-semibold">Creator & Consistency Builder</p>
             </div>
           </div>

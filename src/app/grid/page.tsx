@@ -23,6 +23,7 @@ export default function Home() {
   const [selectedTasks, setSelectedTasks] = useState<Task[]>([]);
   const [newTask, setNewTask] = useState("");
   const [error, setError] = useState<string | null>(null);
+  const [taskToDelete, setTaskToDelete] = useState<string | null>(null);
 
   // start/end dates (past 11 months, next 1 month)
   const { startDate, endDate } = useMemo(() => {
@@ -184,6 +185,13 @@ export default function Home() {
       console.error("Error deleting task:", err);
       setError("Failed to delete task. Please try again.");
     }
+  }
+
+  async function confirmDelete() {
+    if (!taskToDelete) return;
+    const id = taskToDelete;
+    setTaskToDelete(null);
+    await handleDeleteTask(id);
   }
 
   // Unauthorized display - themed to match sand & red editorial
@@ -394,9 +402,9 @@ export default function Home() {
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ duration: 0.3, delay: i * 0.05 }}
                   >
-                    <span className="text-sm font-semibold text-theme-fg uppercase tracking-tight">{task.title}</span>
+                    <span className="text-sm font-semibold text-theme-fg tracking-tight">{task.title}</span>
                     <button
-                      onClick={() => task._id && handleDeleteTask(task._id)}
+                      onClick={() => task._id && setTaskToDelete(task._id)}
                       className={`flex items-center gap-1.5 text-theme-primary hover:opacity-80 text-xs font-black uppercase transition tracking-wider cursor-pointer ${
                         !task._id ? "opacity-30 cursor-not-allowed" : ""
                       }`}
@@ -416,7 +424,7 @@ export default function Home() {
                   value={newTask}
                   onChange={(e) => setNewTask(e.target.value)}
                   placeholder="Insert routine accomplishment description..."
-                  className="w-full sm:flex-1 border-b border-theme-fg/30 bg-transparent text-theme-fg focus:border-theme-primary outline-none py-2 text-sm uppercase tracking-tight font-semibold transition"
+                  className="w-full sm:flex-1 border-b border-theme-fg/30 bg-transparent text-theme-fg focus:border-theme-primary outline-none py-2 text-sm tracking-tight font-semibold transition"
                 />
                 <button
                   type="submit"
@@ -439,6 +447,39 @@ export default function Home() {
           </div>
         </div>
       </footer>
+
+      {taskToDelete && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
+          <motion.div 
+            className="bg-theme-bg text-theme-fg p-8 border border-theme-primary rounded max-w-sm w-full text-center relative overflow-hidden"
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+          >
+            <h3 className="text-lg font-black uppercase tracking-tight text-theme-fg mb-4">
+              ARE YOU SURE YOU WANT TO DELETE THIS LOG?
+            </h3>
+            <p className="text-xs uppercase font-semibold text-theme-fg/60 mb-6">
+              THIS ACTION CANNOT BE UNDONE. THE SELECTED STREAK INCREMENT WILL BE PERMANENTLY REMOVED FROM YOUR GRID.
+            </p>
+            <div className="flex gap-4">
+              <button
+                type="button"
+                onClick={() => setTaskToDelete(null)}
+                className="flex-1 py-3 border border-theme-fg/30 hover:border-theme-primary text-theme-fg text-xs font-bold uppercase tracking-wider transition cursor-pointer"
+              >
+                NO, CANCEL
+              </button>
+              <button
+                type="button"
+                onClick={confirmDelete}
+                className="flex-1 py-3 bg-theme-primary text-theme-bg text-xs font-black uppercase tracking-wider hover:opacity-90 transition cursor-pointer"
+              >
+                YES, DELETE
+              </button>
+            </div>
+          </motion.div>
+        </div>
+      )}
     </main>
   );
 }

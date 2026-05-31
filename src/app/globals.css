@@ -5,17 +5,17 @@
   --foreground: #1A1A1A;
   --color-primary: #328b17;
   --color-border: #FF0800;
-  --color-grid-empty: #E2DBD4;
-  --color-grid-1: #FFE5E5;
-  --color-grid-2: #FFCCCC;
-  --color-grid-3: #FFA3A3;
-  --color-grid-4: #FF7A7A;
-  --color-grid-5: #FF5252;
-  --color-grid-6: #FF2929;
-  --color-grid-7: #E00000;
-  --color-grid-8: #B80000;
-  --color-grid-9: #8F0000;
-  --color-grid-10: #660000;
+  --color-grid-empty: #C7C7B0;
+  --color-grid-1: #E2F0D9;
+  --color-grid-2: #C5E1B3;
+  --color-grid-3: #A9D28E;
+  --color-grid-4: #8CC368;
+  --color-grid-5: #70B442;
+  --color-grid-6: #5AA52E;
+  --color-grid-7: #4C8C27;
+  --color-grid-8: #3D721F;
+  --color-grid-9: #2F5918;
+  --color-grid-10: #213F11;
 }
 
 [data-theme="dark"] {
@@ -54,17 +54,18 @@
   --color-grid-10: #0D0D0D;
 }
 
-.color-empty   { fill: var(--color-grid-empty); }
-.color-github-1 { fill: var(--color-grid-1); }
-.color-github-2 { fill: var(--color-grid-2); }
-.color-github-3 { fill: var(--color-grid-3); }
-.color-github-4 { fill: var(--color-grid-4); }
-.color-github-5 { fill: var(--color-grid-5); }
-.color-github-6 { fill: var(--color-grid-6); }
-.color-github-7 { fill: var(--color-grid-7); }
-.color-github-8 { fill: var(--color-grid-8); }
-.color-github-9 { fill: var(--color-grid-9); }
-.color-github-10 { fill: var(--color-grid-10); }
+[data-theme] .react-calendar-heatmap .color-empty   { fill: var(--color-grid-empty) !important; }
+[data-theme] .react-calendar-heatmap .color-github-0 { fill: var(--color-grid-empty) !important; }
+[data-theme] .react-calendar-heatmap .color-github-1 { fill: var(--color-grid-1) !important; }
+[data-theme] .react-calendar-heatmap .color-github-2 { fill: var(--color-grid-2) !important; }
+[data-theme] .react-calendar-heatmap .color-github-3 { fill: var(--color-grid-3) !important; }
+[data-theme] .react-calendar-heatmap .color-github-4 { fill: var(--color-grid-4) !important; }
+[data-theme] .react-calendar-heatmap .color-github-5 { fill: var(--color-grid-5) !important; }
+[data-theme] .react-calendar-heatmap .color-github-6 { fill: var(--color-grid-6) !important; }
+[data-theme] .react-calendar-heatmap .color-github-7 { fill: var(--color-grid-7) !important; }
+[data-theme] .react-calendar-heatmap .color-github-8 { fill: var(--color-grid-8) !important; }
+[data-theme] .react-calendar-heatmap .color-github-9 { fill: var(--color-grid-9) !important; }
+[data-theme] .react-calendar-heatmap .color-github-10 { fill: var(--color-grid-10) !important; }
 
 /* Make react-calendar-heatmap cells rounded and styled nicely */
 .react-calendar-heatmap rect {

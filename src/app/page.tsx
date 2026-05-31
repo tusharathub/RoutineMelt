@@ -85,6 +85,7 @@ export default function LandingPage() {
           <nav className="flex items-center gap-3 sm:gap-6">
             <a href="#features" className="hidden md:inline text-xs sm:text-sm font-semibold tracking-tight uppercase hover:text-theme-primary transition">Method</a>
             <a href="#pricing" className="hidden md:inline text-xs sm:text-sm font-semibold tracking-tight uppercase hover:text-theme-primary transition">Pricing</a>
+            <a href="https://www.linkedin.com/in/tushar-nailwal/" target="_blank" rel="noopener noreferrer" className="text-xs sm:text-sm font-semibold tracking-tight uppercase hover:text-theme-primary transition">Let&apos;s Talk</a>
             {isSignedIn ? (
               <Link href="/grid" className="text-xs sm:text-sm font-bold tracking-tight uppercase border-b-2 border-theme-primary hover:opacity-80 transition pb-0.5">
                 Dashboard
@@ -397,14 +398,6 @@ export default function LandingPage() {
               <li><Link href="/grid" className="hover:text-theme-primary">Go to Dashboard</Link></li>
               <li><a href="#features" className="hover:text-theme-primary">Our Method</a></li>
               <li><a href="#pricing" className="hover:text-theme-primary">Pricing Table</a></li>
-            </ul>
-          </div>
-          <div>
-            <h4 className="text-theme-primary mb-4 font-black">Legal & Support</h4>
-            <ul className="space-y-2.5">
-              <li><Link href="#" className="hover:text-theme-primary">Privacy Policy</Link></li>
-              <li><Link href="#" className="hover:text-theme-primary">Terms of Service</Link></li>
-              <li><Link href="#" className="hover:text-theme-primary">Contact Support</Link></li>
             </ul>
           </div>
           <div>

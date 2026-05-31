@@ -250,6 +250,9 @@ export default function Home() {
             <Link href="/" className="text-xs sm:text-sm font-semibold tracking-tight uppercase hover:text-theme-primary transition">
               Home
             </Link>
+            <a href="https://www.linkedin.com/in/tushar-nailwal/" target="_blank" rel="noopener noreferrer" className="text-xs sm:text-sm font-semibold tracking-tight uppercase hover:text-theme-primary transition">
+              Let&apos;s Talk
+            </a>
             
             {/* User profile dropdown & Theme switcher */}
             <div className="flex items-center gap-3 sm:gap-4 pl-3 sm:pl-4 border-l border-theme-fg/10">

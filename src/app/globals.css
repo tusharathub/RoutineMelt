@@ -1,40 +1,94 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+:root, [data-theme="sand"] {
+  --background: #F2EBE4;
+  --foreground: #1A1A1A;
+  --color-primary: #328b17;
+  --color-border: #FF0800;
+  --color-grid-empty: #E2DBD4;
+  --color-grid-1: #FFE5E5;
+  --color-grid-2: #FFCCCC;
+  --color-grid-3: #FFA3A3;
+  --color-grid-4: #FF7A7A;
+  --color-grid-5: #FF5252;
+  --color-grid-6: #FF2929;
+  --color-grid-7: #E00000;
+  --color-grid-8: #B80000;
+  --color-grid-9: #8F0000;
+  --color-grid-10: #660000;
 }
 
-.color-empty   { fill: #ebedf0; } /* background / no activity */
-
-.color-github-1 { fill: #e6f9ec; }  /* very light mint */
-.color-github-2 { fill: #c9f2d7; }  /* pale green */
-.color-github-3 { fill: #a6e6b8; }  /* light green */
-.color-github-4 { fill: #7ddf95; }  /* softer green */
-.color-github-5 { fill: #52d474; }  /* medium green */
-.color-github-6 { fill: #34c759; }  /* iOS green */
-.color-github-7 { fill: #28a745; }  /* classic green */
-.color-github-8 { fill: #218838; }  /* dark green */
-.color-github-9 { fill: #19692c; }  /* very dark green */
-.color-github-10 { fill: #0f441b; } /* deepest green */
-
-
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+[data-theme="dark"] {
+  --background: #0D0D0D;
+  --foreground: #F2EBE4;
+  --color-primary: #FF0800;
+  --color-border: #FF0800;
+  --color-grid-empty: #1F1F1F;
+  --color-grid-1: #3D0805;
+  --color-grid-2: #5C0B08;
+  --color-grid-3: #7A0F0A;
+  --color-grid-4: #99130D;
+  --color-grid-5: #B8160F;
+  --color-grid-6: #D61A12;
+  --color-grid-7: #F51D14;
+  --color-grid-8: #FF3C36;
+  --color-grid-9: #FF6661;
+  --color-grid-10: #FF918F;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+[data-theme="red"] {
+  --background: #FF0800;
+  --foreground: #0D0D0D;
+  --color-primary: #0D0D0D;
+  --color-border: #0D0D0D;
+  --color-grid-empty: #E00700;
+  --color-grid-1: #FFA8A8;
+  --color-grid-2: #FF7F7F;
+  --color-grid-3: #FF5454;
+  --color-grid-4: #FF2B2B;
+  --color-grid-5: #E00000;
+  --color-grid-6: #B80000;
+  --color-grid-7: #8F0000;
+  --color-grid-8: #660000;
+  --color-grid-9: #3D0000;
+  --color-grid-10: #0D0D0D;
+}
+
+.color-empty   { fill: var(--color-grid-empty); }
+.color-github-1 { fill: var(--color-grid-1); }
+.color-github-2 { fill: var(--color-grid-2); }
+.color-github-3 { fill: var(--color-grid-3); }
+.color-github-4 { fill: var(--color-grid-4); }
+.color-github-5 { fill: var(--color-grid-5); }
+.color-github-6 { fill: var(--color-grid-6); }
+.color-github-7 { fill: var(--color-grid-7); }
+.color-github-8 { fill: var(--color-grid-8); }
+.color-github-9 { fill: var(--color-grid-9); }
+.color-github-10 { fill: var(--color-grid-10); }
+
+/* Make react-calendar-heatmap cells rounded and styled nicely */
+.react-calendar-heatmap rect {
+  rx: 2px;
+  ry: 2px;
+  cursor: pointer;
+  transition: fill 0.2s ease, opacity 0.2s ease;
+}
+.react-calendar-heatmap rect:hover {
+  opacity: 0.85;
+}
+
+@theme {
+  --color-theme-bg: var(--background);
+  --color-theme-fg: var(--foreground);
+  --color-theme-primary: var(--color-primary);
+  --color-theme-border: var(--color-border);
+  --font-sans: var(--font-outfit), Arial, sans-serif;
+  --font-mono: var(--font-geist-mono), monospace;
 }
 
 body {
-  background: var(--background);
+  background-color: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-sans);
+  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
 }

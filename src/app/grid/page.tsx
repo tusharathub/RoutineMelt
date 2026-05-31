@@ -2,19 +2,21 @@
 
 import CalendarHeatmap, { ReactCalendarHeatmapValue } from "react-calendar-heatmap";
 import "react-calendar-heatmap/dist/styles.css";
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo, SVGAttributes } from "react";
 import { useUser, SignInButton, UserButton } from "@clerk/nextjs";
 import { motion } from "framer-motion";
-import { Calendar, Plus, Trash2 } from "lucide-react";
+import { Calendar, Plus, Trash2, ArrowLeft } from "lucide-react";
+import Link from "next/link";
+import { useTheme } from "@/app/lib/useTheme";
 
 type Task = { _id?: string; title: string; createdAt: string };
 type DayDoc = { date: string; tasks: Task[] };
-// type HeatMapValue = { date: string; count: number };
 type HeatMapValue = ReactCalendarHeatmapValue<string>;
-
 
 export default function Home() {
   const { user, isSignedIn } = useUser();
+  const { theme, setTheme } = useTheme();
+  const currentYear = new Date().getFullYear();
 
   const [values, setValues] = useState<HeatMapValue[]>([]);
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
@@ -37,6 +39,15 @@ export default function Home() {
       endDate: end,
     };
   }, []);
+
+  // Calculate stats dynamically
+  const totalLogs = useMemo(() => {
+    return values.reduce((sum, v) => sum + (v.count || 0), 0);
+  }, [values]);
+
+  const activeDays = useMemo(() => {
+    return values.filter(v => v.count > 0).length;
+  }, [values]);
 
   // Load heatmap data
   useEffect(() => {
@@ -175,136 +186,262 @@ export default function Home() {
     }
   }
 
+  // Unauthorized display - themed to match sand & red editorial
   if (!isSignedIn) {
     return (
-      <motion.div
-        className="flex items-center justify-center min-h-screen bg-gray-50 dark:bg-gray-950"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 0.6 }}
-      >
-        <SignInButton mode="modal">
-          <button
-            className={`flex items-center gap-2 px-6 py-3 text-black rounded-lg shadow-lg hover:bg-gray-100 transition-transform transform hover:scale-105`}
-          >
-            <Plus className="w-5 h-5" />
-            Sign In to See Your Progress
-          </button>
-        </SignInButton>
-      </motion.div>
+      <div className="flex items-center justify-center min-h-screen bg-theme-bg text-theme-fg p-6">
+        <motion.div
+          className="max-w-md w-full bg-theme-fg/5 p-8 border border-theme-primary rounded text-center relative overflow-hidden"
+          initial={{ opacity: 0, scale: 0.95 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.6 }}
+        >
+          <div className="text-3xl font-black tracking-tight text-theme-primary mb-2 select-none">
+            ++ RM.SECURE
+          </div>
+          <h2 className="text-xl font-bold uppercase tracking-tight text-theme-fg mb-4">
+            Authorization Required
+          </h2>
+          <p className="text-xs uppercase font-semibold text-theme-fg/70 leading-relaxed mb-8">
+            Access to the Streak Grid and task builder databases requires a validated credentials sign-in token.
+          </p>
+
+          <SignInButton mode="modal">
+            <button
+              className="w-full py-4 bg-theme-primary text-theme-bg text-sm font-black uppercase tracking-wider hover:opacity-90 transition cursor-pointer"
+            >
+              Sign In to Your Workspace
+            </button>
+          </SignInButton>
+
+          <Link href="/" className="inline-flex items-center gap-1 text-xs uppercase font-bold text-theme-primary hover:underline mt-6">
+            <ArrowLeft className="w-3.5 h-3.5" /> Return to Main Website
+          </Link>
+
+          {/* Abstract watermark */}
+          <div className="absolute -right-6 -bottom-10 text-[10vw] font-black text-theme-primary/5 select-none pointer-events-none">
+            ++
+          </div>
+        </motion.div>
+      </div>
     );
   }
 
   return (
-    <div className="p-6 mt-20 md:p-8 max-w-7xl mx-auto bg-white dark:bg-gray-900 rounded-xl shadow-lg border border-gray-100 dark:border-gray-800">
-      {/* Header */}
-      <motion.div
-        className="flex justify-between items-center mb-8"
-        initial={{ opacity: 0, y: -20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6 }}
-      >
-        <h1 className={`text-3xl font-bold text-black flex items-center gap-2`}>
-          <Calendar className={`w-8 h-8 text-black`} />
-          Your Progress Builder
-        </h1>
-        <UserButton afterSignOutUrl="/" />
-      </motion.div>
+    <main className="min-h-screen flex flex-col transition-colors duration-300 bg-theme-bg text-theme-fg border-theme-primary">
+      {/* Header/Nav */}
+      <header className="sticky top-0 z-50 bg-theme-bg/95 backdrop-blur-sm border-b border-theme-primary/30">
+        <div className="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+          {/* Logo */}
+          <Link href="/" className="flex items-center gap-1 font-black text-theme-primary text-3xl hover:opacity-85 transition select-none tracking-tighter">
+            ++ <span className="text-xl font-bold tracking-tight text-theme-fg">RM</span>
+          </Link>
+          
+          <nav className="flex items-center space-x-6">
+            <Link href="/" className="text-sm font-semibold tracking-tight uppercase hover:text-theme-primary transition">
+              Home
+            </Link>
+            
+            {/* User profile dropdown & Theme switcher */}
+            <div className="flex items-center gap-4 pl-4 border-l border-theme-fg/10">
+              {/* Theme dots switcher */}
+              <div className="flex items-center gap-1.5">
+                <button 
+                  onClick={() => setTheme("dark")} 
+                  title="Dark Mode" 
+                  className={`w-3.5 h-3.5 rounded-full bg-black border border-theme-fg/20 transition-transform hover:scale-125 cursor-pointer ${theme === 'dark' ? 'ring-2 ring-theme-primary ring-offset-2 ring-offset-theme-bg' : ''}`}
+                />
+                <button 
+                  onClick={() => setTheme("sand")} 
+                  title="Sand Mode" 
+                  className={`w-3.5 h-3.5 rounded-full bg-[#F2EBE4] border border-theme-fg/20 transition-transform hover:scale-125 cursor-pointer ${theme === 'sand' ? 'ring-2 ring-theme-primary ring-offset-2 ring-offset-theme-bg' : ''}`}
+                />
+              </div>
+              <UserButton afterSignOutUrl="/" />
+            </div>
+          </nav>
+        </div>
+      </header>
 
-      {/* Error Message */}
-      {error && (
-        <motion.div
-          className="mb-6 p-4 bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-300 rounded-lg"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.4 }}
-        >
-          {error}
-        </motion.div>
-      )}
+      {/* Hero Title */}
+      <section className="w-full px-6 pt-12 md:pt-16 pb-6 text-center">
+        <div className="max-w-7xl mx-auto">
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
+          >
+            <h1 className="text-[12vw] font-black leading-none tracking-tighter text-theme-primary select-none w-full uppercase">
+              Streaks.
+            </h1>
+          </motion.div>
+        </div>
+      </section>
 
-      {/* Calendar Heatmap */}
-      <motion.div
-        className="bg-white dark:bg-gray-950 p-6 rounded-lg shadow-md border border-gray-100 dark:border-gray-800"
-        initial={{ opacity: 0, scale: 0.95 }}
-        animate={{ opacity: 1, scale: 1 }}
-        transition={{ duration: 0.6 }}
-      >
-        <CalendarHeatmap
-          startDate={startDate}
-          endDate={endDate}
-          values={values}
-          classForValue={(value?: HeatMapValue ) => {
-            if (!value) return "color-empty";
-            return `color-github-${Math.min(value.count, 10)}`;
-          }}
-          tooltipDataAttrs={(value): {[key: string]: string} => ({
-          "data-tip": `${value?.date}: ${value?.count || 0} tasks`}) }
-          showWeekdayLabels
-          onClick={(value?: HeatMapValue ) =>
-            value?.date && handleClick(value.date)
-          }
-        />
-      </motion.div>
+      {/* Red Divider & Info Grid */}
+      <div className="w-full border-t border-theme-primary">
+        <div className="max-w-7xl mx-auto px-6 py-6 grid grid-cols-1 md:grid-cols-4 gap-8 text-xs font-semibold tracking-tight uppercase">
+          <div className="text-theme-primary text-sm font-black">
+            RM.WORKSPACE
+          </div>
+          <div>
+            <span className="text-theme-primary block mb-2 font-bold">Active User</span>
+            <span className="normal-case font-normal text-theme-fg/80 leading-relaxed text-sm break-all">
+              {user?.primaryEmailAddress?.emailAddress || user?.username || "Authenticated"}
+            </span>
+          </div>
+          <div>
+            <span className="text-theme-primary block mb-2 font-bold font-black">Total Logged Tasks</span>
+            <div className="text-xl font-black text-theme-primary">
+              {totalLogs} Tasks ({activeDays} Days Active)
+            </div>
+          </div>
+          <div>
+            <span className="text-theme-primary block mb-2 font-bold font-black">Date Range</span>
+            <span className="opacity-80 font-normal">
+              {startDate.toISOString().split("T")[0]} to {endDate.toISOString().split("T")[0]}
+            </span>
+          </div>
+        </div>
+      </div>
 
-      {/* Task Section */}
-      {selectedDate && (
-        <motion.div
-          className="mt-8 p-6 bg-white dark:bg-gray-900 rounded-lg shadow-lg border border-gray-100 dark:border-gray-800"
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
-        >
-          <h2 className="text-xl md:text-2xl font-semibold mb-4 text-gray-900 dark:text-white flex items-center gap-2">
-            <Calendar className={`w-6 h-6 text-black`} />
-            Tasks for {selectedDate}
-          </h2>
-          <ul className="mb-6 space-y-3">
-            {selectedTasks.length === 0 && (
-              <li className="text-gray-500 dark:text-gray-400">No tasks yet</li>
-            )}
-            {selectedTasks.map((task, i) => (
-              <motion.li
-                key={task._id || i}
-                className="flex justify-between items-center p-3 bg-gray-50 dark:bg-gray-800 rounded-lg"
-                initial={{ opacity: 0, x: -20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.4, delay: i * 0.1 }}
-              >
-                <span className="text-gray-900 dark:text-white">{task.title}</span>
-                <button
-                  onClick={() => task._id && handleDeleteTask(task._id)}
-                  className={`flex items-center gap-1 text-red-500 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300 ${
-                    !task._id ? "opacity-50 cursor-not-allowed" : ""
-                  }`}
-                  disabled={!task._id}
-                >
-                  <Trash2 className="w-5 h-5" />
-                  Delete
-                </button>
-              </motion.li>
-            ))}
-          </ul>
-
-          {/* Task Form */}
-          <form onSubmit={handleAddTask} className="flex gap-3">
-            <input
-              type="text"
-              value={newTask}
-              onChange={(e) => setNewTask(e.target.value)}
-              placeholder="Add new task..."
-              className={`flex-1 border border-gray-300 dark:border-gray-700 rounded-lg px-4 py-2 bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-gray-100`}
-            />
-            <button
-              type="submit"
-              className={`flex items-center gap-2 px-4 py-2 bg-gray-100 text-black rounded-lg hover:bg-gray-200 transition-transform transform hover:scale-105`}
+      {/* Heatmap Calendar Section */}
+      <section className="w-full px-6 py-12 border-t border-theme-primary/30">
+        <div className="max-w-7xl mx-auto">
+          {/* Error Message */}
+          {error && (
+            <motion.div
+              className="mb-6 p-4 bg-theme-primary/10 text-theme-primary border border-theme-primary text-xs uppercase font-bold tracking-tight rounded"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.4 }}
             >
-              <Plus className="w-5 h-5" />
-              Add
-            </button>
-          </form>
-        </motion.div>
+              {error}
+            </motion.div>
+          )}
+
+          {/* Heatmap Layout */}
+          <motion.div
+            className="bg-theme-fg/5 p-6 md:p-8 rounded border border-theme-primary/30 shadow-sm relative overflow-hidden"
+            initial={{ opacity: 0, scale: 0.98 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.6 }}
+          >
+            <div className="flex items-center justify-between mb-6">
+              <span className="text-xs uppercase font-bold tracking-wider text-theme-primary">
+                Annual Streak Visualization (Click on cells to inspect)
+              </span>
+              <span className="text-xs uppercase font-semibold text-theme-fg/50">
+                Red-Scale Heat Engine
+              </span>
+            </div>
+
+            <CalendarHeatmap
+              startDate={startDate}
+              endDate={endDate}
+              values={values}
+              classForValue={(value?: HeatMapValue) => {
+                if (!value || !value.count) return "color-empty";
+                return `color-github-${Math.min(value.count, 10)}`;
+              }}
+              tooltipDataAttrs={(value?: HeatMapValue) => ({
+                "data-tip": `${value?.date || ""}: ${value?.count || 0} tasks`
+              } as SVGAttributes<SVGGElement>)}
+              showWeekdayLabels
+              onClick={(value?: HeatMapValue) =>
+                value?.date && handleClick(value.date)
+              }
+            />
+          </motion.div>
+        </div>
+      </section>
+
+      {/* Task Logger Modal / Detail View */}
+      {selectedDate && (
+        <section className="w-full px-6 py-12 border-t border-theme-primary bg-theme-fg/5">
+          <div className="max-w-3xl mx-auto">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5 }}
+            >
+              {/* Card Header */}
+              <div className="flex justify-between items-center mb-8 border-b border-theme-primary/30 pb-4">
+                <h2 className="text-xl font-black uppercase tracking-tight text-theme-fg flex items-center gap-2">
+                  <Calendar className="w-5.5 h-5.5 text-theme-primary" />
+                  Day Log / {selectedDate}
+                </h2>
+                <button 
+                  onClick={() => setSelectedDate(null)}
+                  className="text-xs font-bold uppercase border border-theme-fg/30 hover:border-theme-primary hover:bg-theme-primary/10 transition px-3 py-1 cursor-pointer"
+                >
+                  Close Day
+                </button>
+              </div>
+
+              {/* Tasks List */}
+              <ul className="mb-8 space-y-3">
+                {selectedTasks.length === 0 && (
+                  <li className="text-xs uppercase font-semibold text-theme-fg/40 py-6 text-center border border-dashed border-theme-fg/20 rounded">
+                    Zero tasks completed on this day. Use the builder below to log routine metrics.
+                  </li>
+                )}
+                {selectedTasks.map((task, i) => (
+                  <motion.li
+                    key={task._id || i}
+                    className="flex justify-between items-center p-4 bg-theme-bg border border-theme-primary/20 hover:border-theme-primary/65 transition rounded duration-250"
+                    initial={{ opacity: 0, x: -10 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ duration: 0.3, delay: i * 0.05 }}
+                  >
+                    <span className="text-sm font-semibold text-theme-fg uppercase tracking-tight">{task.title}</span>
+                    <button
+                      onClick={() => task._id && handleDeleteTask(task._id)}
+                      className={`flex items-center gap-1.5 text-theme-primary hover:opacity-80 text-xs font-black uppercase transition tracking-wider cursor-pointer ${
+                        !task._id ? "opacity-30 cursor-not-allowed" : ""
+                      }`}
+                      disabled={!task._id}
+                    >
+                      <Trash2 className="w-4 h-4" />
+                      Delete
+                    </button>
+                  </motion.li>
+                ))}
+              </ul>
+
+              {/* Task Add Form */}
+              <form onSubmit={handleAddTask} className="flex gap-4 items-center">
+                <input
+                  type="text"
+                  value={newTask}
+                  onChange={(e) => setNewTask(e.target.value)}
+                  placeholder="Insert routine accomplishment description..."
+                  className="flex-1 border-b border-theme-fg/30 bg-transparent text-theme-fg focus:border-theme-primary outline-none py-2 text-sm uppercase tracking-tight font-semibold transition"
+                />
+                <button
+                  type="submit"
+                  className="px-6 py-3 bg-theme-primary text-theme-bg text-xs font-black uppercase tracking-widest hover:opacity-90 transition flex items-center gap-1 cursor-pointer"
+                >
+                  <Plus className="w-4 h-4" />
+                  Add
+                </button>
+              </form>
+            </motion.div>
+          </div>
+        </section>
       )}
-    </div>
+
+      {/* Footer */}
+      <footer className="w-full bg-theme-bg border-t border-theme-primary py-12 px-6 text-xs font-semibold tracking-tight uppercase mt-auto">
+        <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4 text-theme-fg/50">
+          <div>
+            © {currentYear} RoutineMelt. Secured Workspace Environment.
+          </div>
+          <div className="text-xs uppercase font-bold text-theme-primary">
+            Brutalist Sand & Red Dashboard Core.
+          </div>
+        </div>
+      </footer>
+    </main>
   );
 }

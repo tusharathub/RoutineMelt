@@ -244,19 +244,14 @@ export default function Home() {
             
             {/* User profile dropdown & Theme switcher */}
             <div className="flex items-center gap-4 pl-4 border-l border-theme-fg/10">
-              {/* Theme dots switcher */}
-              <div className="flex items-center gap-1.5">
-                <button 
-                  onClick={() => setTheme("dark")} 
-                  title="Dark Mode" 
-                  className={`w-3.5 h-3.5 rounded-full bg-black border border-theme-fg/20 transition-transform hover:scale-125 cursor-pointer ${theme === 'dark' ? 'ring-2 ring-theme-primary ring-offset-2 ring-offset-theme-bg' : ''}`}
-                />
-                <button 
-                  onClick={() => setTheme("sand")} 
-                  title="Sand Mode" 
-                  className={`w-3.5 h-3.5 rounded-full bg-[#F2EBE4] border border-theme-fg/20 transition-transform hover:scale-125 cursor-pointer ${theme === 'sand' ? 'ring-2 ring-theme-primary ring-offset-2 ring-offset-theme-bg' : ''}`}
-                />
-              </div>
+              {/* Typographic Theme Toggle */}
+              <button
+                onClick={() => setTheme(theme === "dark" ? "sand" : "dark")}
+                className="flex items-center gap-1.5 px-3 py-1.5 border border-theme-fg/20 hover:border-theme-primary transition rounded text-[10px] font-bold uppercase tracking-wider cursor-pointer select-none"
+              >
+                <span>Theme /</span>
+                <span className="text-theme-primary">{theme === "dark" ? "Dark" : "Light"}</span>
+              </button>
               <UserButton afterSignOutUrl="/" />
             </div>
           </nav>
